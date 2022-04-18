@@ -1,0 +1,32 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+<div class="container">
+    <div class="row">
+    <h3 class="mt-5 mb-5">Create Students Grades</h3>
+        <div class="col-md-6 offset-md-3">
+            {{ form_start(form) }}
+                <div class="form-group">
+                    {{form_label(form.student)}}
+                    {{form_widget(form.student, {'attr': {'class': 'form-control'}})}}
+
+                    </br>
+
+                    {{form_label(form.course)}}
+                    {{form_widget(form.course, {'attr': {'class': 'form-control'}})}}
+                    
+                    </br>
+
+                    {{form_label(form.grade)}}
+                    {{form_widget(form.grade, {'attr': {'class': 'form-control'}})}}
+
+
+                    <button class="btn btn-info mt-5 text-white">Submit</button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

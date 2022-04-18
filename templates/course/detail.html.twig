@@ -1,0 +1,34 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+<div class="container">
+    <div class="row">
+    <h3 class="mt-5 mb-5">Course Details</h3>
+        <div class="col-md-6 offset-md-3">
+                <div class="form-group">
+
+                    <label>Name</label>
+                    <div >
+                        <input class="form-control" value="{{course.name}}" disabled="true"></input>
+                    </div>
+
+                    </br>
+
+                    <label>Classe</label>
+                    <div >
+                        <input class="form-control" value="{{course.getClasseName()}}" disabled="true"></input>
+                    </div>
+
+                    </br>
+
+                    <label>Description</label>
+                    <div>
+                        <textarea class="form-control" rows=10 disabled="true">{{course.description}}</textarea>   
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

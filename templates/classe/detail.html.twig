@@ -1,0 +1,27 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+<div class="container">
+    <div class="row">
+    <h3 class="mt-5 mb-5">Class Details</h3>
+        <div class="col-md-6 offset-md-3">
+                <div class="form-group">
+
+                    <label>Name</label>
+                    <div >
+                        <input class="form-control" value="{{classe.name}}" disabled="true"></input>
+                    </div>
+
+                    </br>
+
+                    <label>Section</label>
+                    <div>
+                        <input class="form-control" value="{{classe.section}}" disabled="true"></input>   
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

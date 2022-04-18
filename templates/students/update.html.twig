@@ -1,0 +1,40 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+<div class="container">
+    <div class="row">
+    <h3 class="mt-5 mb-5">Update Student</h3>
+        <div class="col-md-6 offset-md-3">
+            {{ form_start(form) }}
+                <div class="form-group">
+                    {{form_label(form.firstName)}}
+                    {{form_widget(form.firstName, {'attr': {'class': 'form-control'}})}}
+
+                    </br>
+
+                    {{form_label(form.lastName)}}
+                    {{form_widget(form.lastName, {'attr': {'class': 'form-control'}})}}
+
+                    </br>
+                    {{form_label(form.dateOfBirth)}}
+                    {{ form_widget(form.dateOfBirth,  {'attr': {'class': 'form-control', 'placeholder' : 'yyyy-MM-dd'}}) }}
+
+                    </br>
+
+                    {{form_label(form.img)}}
+                    {{form_widget(form.img, {'attr': {'class': 'form-control'}})}}
+
+                    </br>
+
+                    {{form_label(form.classe)}}
+                    {{form_widget(form.classe, {'attr': {'class': 'form-control'}})}}
+
+                    <button class="btn btn-info mt-5 text-white">Submit</button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
