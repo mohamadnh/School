@@ -7,10 +7,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class ClasseController extends AbstractController
 {
     /**
+     * @IsGranted("ROLE_USER")
      * @Route("/classes", name="app_classe")
      */
     public function index(): Response
@@ -21,6 +23,7 @@ class ClasseController extends AbstractController
         ]);
     }
     /**
+     * @IsGranted("ROLE_USER")
      * @Route("/classes/detail/{id}", name="classeDetail")
      */
     public function detail($id): Response
@@ -32,6 +35,7 @@ class ClasseController extends AbstractController
         ]);
     }
     /**
+     * @IsGranted("ROLE_ADMIN")
      * @Route("/classes/create", name="createClasse")
      */
     public function create(Request $request){
@@ -56,6 +60,7 @@ class ClasseController extends AbstractController
         ]);
     }
     /**
+     * @IsGranted("ROLE_ADMIN")
      * @Route("/classes/update/{id}", name="updateClasse")
      */
     public function update(Request $request, $id){
@@ -81,6 +86,7 @@ class ClasseController extends AbstractController
         ]);
     }
     /**
+     * @IsGranted("ROLE_ADMIN")
      * @Route("/classes/delete/{id}", name="deleteClasse")
      */
     public function delete($id){

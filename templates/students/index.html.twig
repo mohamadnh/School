@@ -7,8 +7,11 @@
     <h3>List of Students</h3>
     
     </br>
-
-    <a class="btn btn-success mb-3" href="{{path('createStudent')}}">Create</a>
+    
+    {% if is_granted('ROLE_ADMIN') %}
+        <a class="btn btn-success mb-3" href="{{path('createStudent')}}">Create</a>
+    {% endif %}
+    
     {% for message in app.flashes('notice') %}
         <div class="alert alert-success">
             {{message}}
@@ -37,8 +40,12 @@
                 <th>{{student.getClasseName()}}</th>
                 <th>
                     <a class="btn btn-info" href="{{path('studentDetail', {'id':student.id } )}}">Detail</a>
-                    <a class="btn btn-warning" href="{{path('updateStudent', {'id':student.id } )}}">Update</a>
-                    <a class="btn btn-danger" href="{{ path('deleteStudent', {'id': student.id } )}}">Delete</a>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a class="btn btn-warning" href="{{path('updateStudent', {'id':student.id } )}}">Update</a>
+                        <a class="btn btn-danger" href="{{ path('deleteStudent', {'id': student.id } )}}">Delete</a>
+                    {% endif %}
+                    
+                    
                 </th>
             </tr>
         {% endfor %}

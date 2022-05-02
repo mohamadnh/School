@@ -8,20 +8,25 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Gedmo\Sluggable\Util\Urlizer;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class StudentsController extends AbstractController
 {
+    
     /**
+     * @IsGranted("ROLE_USER")
      * @Route("/students", name="app_students")
      */
     public function index(): Response
     {
+        // $this->denyAccessUnlessGranted('ROLE_USER');
         $students = $this->getDoctrine()->getRepository(Student::class)->findAll();
         return $this->render('students/index.html.twig', [
             'students' => $students
         ]);
     }
     /**
+     * @IsGranted("ROLE_USER")
      * @Route("/students/detail/{id}", name="studentDetail")
      */
     public function detail($id): Response
@@ -33,6 +38,7 @@ class StudentsController extends AbstractController
         ]);
     }
     /**
+     * @IsGranted("ROLE_ADMIN")
      * @Route("/students/create", name="createStudent")
      */
     public function create(Request $request){
@@ -69,6 +75,7 @@ class StudentsController extends AbstractController
         ]);
     }
     /**
+     * @IsGranted("ROLE_ADMIN")
      * @Route("/students/update/{id}", name="updateStudent")
      */
     public function update(Request $request, $id){
@@ -106,6 +113,7 @@ class StudentsController extends AbstractController
         ]);
     }
     /**
+     * @IsGranted("ROLE_ADMIN")
      * @Route("/students/delete/{id}", name="deleteStudent")
      */
     public function delete($id){

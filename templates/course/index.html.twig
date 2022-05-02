@@ -33,8 +33,11 @@
                 <th>{{course.description}}</th>
                 <th>
                     <a class="btn btn-info" href="{{path('CourseDetail', {'id':course.id } )}}">Detail</a>
-                    <a class="btn btn-warning" href="{{path('updateCourse', {'id':course.id } )}}">Update</a>
-                    <a class="btn btn-danger" href="{{ path('deleteCourse', {'id': course.id } )}}">Delete</a>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a class="btn btn-warning" href="{{path('updateCourse', {'id':course.id } )}}">Update</a>
+                        <a class="btn btn-danger" href="{{ path('deleteCourse', {'id': course.id } )}}">Delete</a>
+                    {% endif %}
+                    
                 </th>
             </tr>
         {% endfor %}

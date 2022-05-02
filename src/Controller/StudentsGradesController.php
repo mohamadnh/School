@@ -7,12 +7,13 @@ use App\Form\StudentsGradesType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class StudentsGradesController extends AbstractController
 {
     /**
+     * @IsGranted("ROLE_USER")
      * @Route("/students/grades", name="app_students_grades")
      */
     public function index(): Response
@@ -24,6 +25,7 @@ class StudentsGradesController extends AbstractController
     }
 
     /**
+     * @IsGranted("ROLE_USER")
      * @Route("/students/grades/detail/{id}", name="studentsGradeDetail")
      */
     public function detail($id): Response
@@ -35,6 +37,7 @@ class StudentsGradesController extends AbstractController
         ]);
     }
     /**
+     * @IsGranted("ROLE_ADMIN")
      * @Route("/students/grades/create", name="createStudentsGrade")
      */
     public function create(Request $request){
@@ -64,6 +67,7 @@ class StudentsGradesController extends AbstractController
         ]);
     }
     /**
+     * @IsGranted("ROLE_ADMIN")
      * @Route("/students/grades/delete/{id}", name="deleteStudentsGrade")
      */
     public function delete($id){

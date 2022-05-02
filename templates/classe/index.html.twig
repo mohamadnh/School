@@ -31,8 +31,12 @@
                 <th>{{class.section}}</th>
                 <th>
                     <a class="btn btn-info" href="{{path('classeDetail', {'id':class.id } )}}">Detail</a>
-                    <a class="btn btn-warning" href="{{path('updateClasse', {'id':class.id } )}}">Update</a>
-                    <a class="btn btn-danger" href="{{ path('deleteClasse', {'id': class.id } )}}">Delete</a>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a class="btn btn-warning" href="{{path('updateClasse', {'id':class.id } )}}">Update</a>
+                        <a class="btn btn-danger" href="{{ path('deleteClasse', {'id': class.id } )}}">Delete</a>
+                    {% endif %}
+                    
+                    
                 </th>
             </tr>
         {% endfor %}

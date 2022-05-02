@@ -39,7 +39,9 @@
                 <th>{{studentsGrade.getGrade()}}</th>
                 <th>
                     <a class="btn btn-info" href="{{path('studentsGradeDetail', {'id':studentsGrade.id } )}}">Detail</a>
-                    <a class="btn btn-danger" href="{{ path('deleteStudentsGrade', {'id': studentsGrade.id } )}}">Delete</a>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a class="btn btn-danger" href="{{ path('deleteStudentsGrade', {'id': studentsGrade.id } )}}">Delete</a>
+                    {% endif %}
                 </th>
             </tr>
         {% endfor %}
