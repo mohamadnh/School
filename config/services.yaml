@@ -4,7 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-
+    uploads_path: '/uploads/images/'
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -25,6 +25,21 @@ services:
     App\Controller\:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
+        
+    admin.classe:
+        class: App\Admin\ClasseAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Classe, manager_type: orm, label: 'Classe' }
+    admin.course:
+        class: App\Admin\CourseAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Course, manager_type: orm, label: 'Course' }
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    admin.student:
+        class: App\Admin\StudentAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Student, manager_type: orm, label: 'Student' }
+    admin.grade:
+        class: App\Admin\GradeAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\StudentsGrades, manager_type: orm, label: 'StudentsGrades' }

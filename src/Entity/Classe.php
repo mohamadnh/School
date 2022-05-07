@@ -142,4 +142,34 @@ class Classe
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, StudentsGrades>
+     */
+    public function getStudentsGrades(): Collection
+    {
+        return $this->studentsGrades;
+    }
+
+    public function addStudentsGrade(StudentsGrades $studentsGrade): self
+    {
+        if (!$this->studentsGrades->contains($studentsGrade)) {
+            $this->studentsGrades[] = $studentsGrade;
+            $studentsGrade->setClasse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStudentsGrade(StudentsGrades $studentsGrade): self
+    {
+        if ($this->studentsGrades->removeElement($studentsGrade)) {
+            // set the owning side to null (unless already changed)
+            if ($studentsGrade->getClasse() === $this) {
+                $studentsGrade->setClasse(null);
+            }
+        }
+
+        return $this;
+    }
 }
