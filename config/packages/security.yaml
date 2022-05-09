@@ -35,5 +35,5 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/%kernel.default_locale%/admin/, role: [ROLE_ADMIN] }
+        - { path: ^/%kernel.default_locale%/admin/, roles: ROLE_ADMIN}
         - { path: ^/, roles: IS_AUTHENTICATED_FULLY}

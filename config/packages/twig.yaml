@@ -1,2 +1,5 @@
 twig:
+    paths:
+        - '%kernel.project_dir%/template'
+        - '%kernel.project_dir%/vendor/knplabs/knp-menu/src/Knp/Menu/Resources/views'
     debug: '%kernel.debug%'
