@@ -48,18 +48,6 @@ class StudentsController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
-            
-            $uploadedFile = $form['img']->getData();
-            if ($uploadedFile) {
-                $destination = $this->getParameter('kernel.project_dir').'/public/uploads/images';
-                $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $newFilename = Urlizer::urlize($originalFilename).'-'.uniqid().'.'.$uploadedFile->guessExtension();
-                $uploadedFile->move(
-                    $destination,
-                    $newFilename
-                );
-                $student->setImage($newFilename);
-            }
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($student);
@@ -86,18 +74,6 @@ class StudentsController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
-
-            $uploadedFile = $form['img']->getData();
-            if ($uploadedFile) {
-                $destination = $this->getParameter('kernel.project_dir').'/public/uploads/images';
-                $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $newFilename = Urlizer::urlize($originalFilename).'-'.uniqid().'.'.$uploadedFile->guessExtension();
-                $uploadedFile->move(
-                    $destination,
-                    $newFilename
-                );
-                $student->setImage($newFilename);
-            }
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($student);

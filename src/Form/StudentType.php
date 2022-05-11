@@ -7,9 +7,10 @@ use App\Entity\Student;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class StudentType extends AbstractType
 {
@@ -18,14 +19,13 @@ class StudentType extends AbstractType
         $builder
             ->add('firstName')
             ->add('lastName')
-            ->add('dateOfBirth', DateTimeType::class, [
+            ->add('dateOfBirth', DateType::class, [
                 "widget" => 'single_text',
                 "format" => 'yyyy-MM-dd',
                 'data' => new \DateTime(),
             ])
-            ->add('img', FileType::class, [
-                'mapped' => false,
-                'required' => false
+            ->add('imageFile', VichFileType::class, [
+                'required' => false,
             ])
             ->add('classe', EntityType:: class, [
                 'class' => Classe::class,

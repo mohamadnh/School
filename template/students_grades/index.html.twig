@@ -31,7 +31,7 @@
         {% for studentsGrade in studentsGrades %}
             <tr>
                 <th>{{studentsGrade.id}}</th>
-                <th><img src="{{ asset('uploads/images/' ~ studentsGrade.getImage()) }}" width="150" alt="ACME logo"></th>
+                <th><img <img src="{{ asset(vich_uploader_asset(studentsGrade.student, 'imageFile')) }}" width="150" alt="ACME logo"></th>
                 <th>{{studentsGrade.getFirstName()}}</th>
                 <th>{{studentsGrade.getLastName()}}</th>
                 <th>{{studentsGrade.getClasseName()}}</th>
