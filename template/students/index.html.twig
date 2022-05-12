@@ -17,6 +17,32 @@
             {{message}}
         </div>
     {% endfor %}
+
+    {{ form_start(form) }}
+    <div class="d-flex justify-content-end">
+
+        <div class="p2" style="margin-right: 5px; padding:5px;">
+            <label>Filter by</label>
+        </div>
+        <div class="p2" style="margin-right: 5px;">
+            {{form_widget(form.type, {'attr': {'class': 'form-select'}})}}
+        </div>
+        <div class="p2" style="margin-right: 5px;">
+            {{form_widget(form.query)}}
+        </div>
+        <div class="p2" style="margin-right: 5px;">
+            {{form_widget(form.search)}}
+        </div>
+        <div class="p2">
+            <a class="btn btn-danger" href="{{path('app_students')}}">Reset</a>
+        </div>
+    </div>
+    {{ form_end(form) }}
+
+    {# {{render(controller(
+        'App\\Controller\\StudentsController::searchBarAction'
+    ))}} #}
+    
     <table class="table table-hover" style="vertical-align: middle; text-align: center;">
         <thead>
             <tr>

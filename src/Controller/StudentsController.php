@@ -9,6 +9,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Gedmo\Sluggable\Util\Urlizer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class StudentsController extends AbstractController
 {
@@ -17,12 +20,62 @@ class StudentsController extends AbstractController
      * @IsGranted("ROLE_USER")
      * @Route("/students", name="app_students")
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
         // $this->denyAccessUnlessGranted('ROLE_USER');
+        
+        $form = $this->createFormBuilder(null)
+            ->add('type', ChoiceType::class, [
+                'choices' => [
+                    'firstName'=>'firstName',
+                    'lastName'=>'lastName',
+                    'classe' => 'classe'
+                ]
+            ])
+            ->add('query', TextType::class, [
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control'
+                ]
+            ])
+            ->add('search', SubmitType::class, [
+                'attr' => [
+                    'class' => 'btn btn-primary'
+                ]
+            ])->getForm();
+        
+        $form->handleRequest($request);
+
         $students = $this->getDoctrine()->getRepository(Student::class)->findAll();
+
+        if($form->isSubmitted()){
+
+            $data = $form->getData()['query'];
+            $type = $form->getData()['type'];
+
+            if($data != null){
+                $em = $this->getDoctrine()->getManager();
+                if($type == 'classe'){
+                    $query = $em->createQuery(
+                        'SELECT s
+                        FROM App:Student s, App:Classe c
+                        WHERE s.classe = c.id and c.name = :data'
+                    )
+                    ->setParameter('data', $data);   
+                } else {
+                    $query = $em->createQuery(
+                        'SELECT s
+                        FROM App:Student s
+                        WHERE s.'.$type.' = :data'
+                    )
+                    ->setParameter('data', $data);    
+                }
+                $students = $query->getResult();
+            }
+        }
         return $this->render('students/index.html.twig', [
-            'students' => $students
+            'students' => $students,
+            'form' => $form->createView()
         ]);
     }
     /**
@@ -32,7 +85,6 @@ class StudentsController extends AbstractController
     public function detail($id): Response
     {
         $student = $this->getDoctrine()->getRepository(Student::class)->find($id);
-
         return $this->render('students/detail.html.twig', [
             'student' => $student
         ]);
@@ -102,5 +154,50 @@ class StudentsController extends AbstractController
 
         return $this->redirectToRoute('app_students');
     }
+
+    // public function searchBarAction(){
+
+    //     $form = $this->createFormBuilder(null)
+    //     ->setAction($this->generateUrl('handleSearch'))
+    //     ->add('query', TextType::class, [
+    //         'required' => false,
+    //         'attr' => [
+    //             'class' => 'form-control'
+    //         ]
+    //     ])
+    //     ->add('search', SubmitType::class, [
+    //         'attr' => [
+    //             'class' => 'btn btn-primary'
+    //         ]
+    //     ])->getForm();
+    //     return $this->render('students/search.html.twig', [
+    //         'form' => $form->createView()
+    //     ]);
+    // }
+
+    // /**
+    //  *
+    //  * @Route("/students/reset", name="reset")
+    //  */
+    // public function handleSearch(Request $request){
+    //     $data = $request->request->get('form')['query'];
+
+    //     if($data != null){
+    //         $em = $this->getDoctrine()->getManager();
+
+    //         $query = $em->createQuery(
+    //             'SELECT s
+    //             FROM App:Student s
+    //             WHERE s.firstName = :firstName'
+    //         )->setParameter('firstName', $data);   
+
+    //         $students = $query->getResult();
+
+    //         return $this->render('students/index.html.twig', [
+    //             'students' => $students,
+    //         ]);
+    //     }
+    //     return $this->redirectToRoute('app_students');
+    // }
     
 }

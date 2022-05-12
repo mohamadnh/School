@@ -22,8 +22,8 @@ final class StudentAdmin extends AbstractAdmin
     {
         $form
         ->with('Content', ['class' => 'col-md-9'])
-            ->add('first_name', TextType::class)
-            ->add('lastname', TextType::class)
+            ->add('firstName', TextType::class)
+            ->add('lastName', TextType::class)
             ->add('classe', ModelType::class, [
                 'class' => Classe::class,
                 'property' => 'name',
@@ -44,8 +44,8 @@ final class StudentAdmin extends AbstractAdmin
 
     protected function configureDatagridFilters(DatagridMapper $datagrid): void
     {
-        $datagrid->add('firstname');
-        $datagrid->add('lastname');
+        $datagrid->add('firstName');
+        $datagrid->add('lastName');
         $datagrid->add('dateOfBirth');
         $datagrid->add('classe');
     }
@@ -53,8 +53,8 @@ final class StudentAdmin extends AbstractAdmin
     protected function configureListFields(ListMapper $list): void
     {
         $list->addIdentifier('image', NULL , array('template' => 'image_list.html.twig'));
-        $list->addIdentifier('firstname');
-        $list->addIdentifier('lastname');
+        $list->addIdentifier('firstName');
+        $list->addIdentifier('lastName');
         $list->addIdentifier('dateOfBirth');
         $list->addIdentifier('classe');
     }
@@ -62,8 +62,8 @@ final class StudentAdmin extends AbstractAdmin
     protected function configureShowFields(ShowMapper $show): void
     {
         $show->add('image', NULL , array('template' => 'image.html.twig'));
-        $show->add('firstname');
-        $show->add('lastname');
+        $show->add('firstName');
+        $show->add('lastName');
         $show->add('dateOfBirth');
         $show->add('classe');
     }

@@ -9,6 +9,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class StudentsGradesController extends AbstractController
 {
@@ -16,11 +19,78 @@ class StudentsGradesController extends AbstractController
      * @IsGranted("ROLE_USER")
      * @Route("/students/grades", name="app_students_grades")
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        $form = $this->createFormBuilder(null)
+        ->add('type', ChoiceType::class, [
+            'choices' => [
+                'firstName'=>'firstName',
+                'lastName'=>'lastName',
+                'classe' => 'classe',
+                'course' => 'course',
+                'grade' => 'grade'
+            ]
+        ])
+        ->add('query', TextType::class, [
+            'required' => false,
+            'attr' => [
+                'class' => 'form-control'
+            ]
+        ])
+        ->add('search', SubmitType::class, [
+            'attr' => [
+                'class' => 'btn btn-primary'
+            ]
+        ])->getForm();
+    
+        $form->handleRequest($request);
+
         $studentsGrades = $this->getDoctrine()->getRepository(StudentsGrades::class)->findAll();
+
+        if($form->isSubmitted()){
+
+            $data = $form->getData()['query'];
+            $type = $form->getData()['type'];
+
+            if($data != null){
+                $em = $this->getDoctrine()->getManager();
+                if($type == 'classe'){
+                    $query = $em->createQuery(
+                        'SELECT sg
+                        FROM App:Student s, App:Classe c, App:StudentsGrades sg
+                        WHERE s.classe = c.id and c.name = :data and sg.student = s.id'
+                    )
+                    ->setParameter('data', $data);
+                }else if($type == 'course'){
+                    $query = $em->createQuery(
+                        'SELECT sg
+                        FROM App:Course c, App:StudentsGrades sg
+                        WHERE sg.course = c.id and c.name = :data'
+                    )
+                    ->setParameter('data', $data);
+                } else if($type == 'grade'){
+                    $query = $em->createQuery(
+                        'SELECT sg
+                        FROM App:StudentsGrades sg, App:Student s
+                        WHERE sg.grade = :data and s.id = sg.student'
+                    )
+                    ->setParameter('data', $data);   
+                } else {
+                    $query = $em->createQuery(
+                        'SELECT sg
+                        FROM App:StudentsGrades sg, App:Student s
+                        WHERE s.'.$type.' = :data and s.id = sg.student'
+                    )
+                    ->setParameter('data', $data);    
+                }
+                $studentsGrades = $query->getResult();
+            }
+        }
+
+        
         return $this->render('students_grades/index.html.twig', [
             'studentsGrades' => $studentsGrades,
+            'form' => $form->createView()
         ]);
     }
 
