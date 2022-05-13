@@ -5,6 +5,9 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     uploads_path: '/uploads/images/'
+knp_paginator:
+    template:
+        pagination: "others/pagination.html.twig"
 services:
     # default configuration for services in *this* file
     _defaults:

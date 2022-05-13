@@ -35,7 +35,7 @@
         </div>
     </div>
     {{ form_end(form) }}
-    
+    <h4>Classes total: {{classes.getTotalItemCount}}</h4>
     <table class="table table-hover" style="vertical-align: middle; text-align: center;">
         <thead>
             <tr>
@@ -64,5 +64,8 @@
         {% endfor %}
         </tbody>
     </table>
+    <div class="d-flex justify-content-center">
+    {{ knp_pagination_render(classes) }}
+    </div>
 <div>
 {% endblock %}

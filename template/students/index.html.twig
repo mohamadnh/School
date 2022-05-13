@@ -42,7 +42,7 @@
     {# {{render(controller(
         'App\\Controller\\StudentsController::searchBarAction'
     ))}} #}
-    
+    <h4>Students total: {{students.getTotalItemCount}}</h4>
     <table class="table table-hover" style="vertical-align: middle; text-align: center;">
         <thead>
             <tr>
@@ -70,12 +70,13 @@
                         <a class="btn btn-warning" href="{{path('updateStudent', {'id':student.id } )}}">Update</a>
                         <a class="btn btn-danger" href="{{ path('deleteStudent', {'id': student.id } )}}">Delete</a>
                     {% endif %}
-                    
-                    
                 </th>
             </tr>
         {% endfor %}
         </tbody>
     </table>
+    <div class="d-flex justify-content-center">
+    {{ knp_pagination_render(students) }}
+    </div>
 <div>
 {% endblock %}

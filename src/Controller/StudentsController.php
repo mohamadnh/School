@@ -12,6 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Knp\Component\Pager\PaginatorInterface;
 
 class StudentsController extends AbstractController
 {
@@ -20,7 +21,7 @@ class StudentsController extends AbstractController
      * @IsGranted("ROLE_USER")
      * @Route("/students", name="app_students")
      */
-    public function index(Request $request): Response
+    public function index(Request $request, PaginatorInterface $paginator): Response
     {
         // $this->denyAccessUnlessGranted('ROLE_USER');
         
@@ -46,32 +47,46 @@ class StudentsController extends AbstractController
         
         $form->handleRequest($request);
 
-        $students = $this->getDoctrine()->getRepository(Student::class)->findAll();
+        $data = $request->query->get('query');
+        $type =$request->query->get('type');
+
+        if($data != null && $type != null){
+            $em = $this->getDoctrine()->getManager();
+            if($type == 'classe'){
+                $query = $em->createQuery(
+                    'SELECT s
+                    FROM App:Student s, App:Classe c
+                    WHERE s.classe = c.id and c.name = :data'
+                )
+                ->setParameter('data', $data);   
+            } else {
+                $query = $em->createQuery(
+                    'SELECT s
+                    FROM App:Student s
+                    WHERE s.'.$type.' = :data'
+                )
+                ->setParameter('data', $data);    
+            }
+            $students = $query->getResult();
+
+        } else {
+            $students = $this->getDoctrine()->getRepository(Student::class)->findAll();
+        }
+
+        $students = $paginator->paginate(
+            $students, /* query NOT result */
+            $request->query->getInt('page', 1)/*page number*/,
+            2/*limit per page*/
+        );
 
         if($form->isSubmitted()){
 
             $data = $form->getData()['query'];
             $type = $form->getData()['type'];
 
-            if($data != null){
-                $em = $this->getDoctrine()->getManager();
-                if($type == 'classe'){
-                    $query = $em->createQuery(
-                        'SELECT s
-                        FROM App:Student s, App:Classe c
-                        WHERE s.classe = c.id and c.name = :data'
-                    )
-                    ->setParameter('data', $data);   
-                } else {
-                    $query = $em->createQuery(
-                        'SELECT s
-                        FROM App:Student s
-                        WHERE s.'.$type.' = :data'
-                    )
-                    ->setParameter('data', $data);    
-                }
-                $students = $query->getResult();
-            }
+            $route = $this->generateUrl('app_students', ['query' => $data, 'type' => $type]);
+
+            return $this->redirect($route);
         }
         return $this->render('students/index.html.twig', [
             'students' => $students,

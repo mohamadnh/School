@@ -34,8 +34,9 @@
             <a class="btn btn-danger" href="{{path('app_students_grades')}}">Reset</a>
         </div>
     </div>
+    
     {{ form_end(form) }}
-
+    <h4>Students grades total: {{studentsGrades.getTotalItemCount}}</h4>
     <table class="table table-hover" style="vertical-align: middle; text-align: center;">
         <thead>
             <tr>
@@ -69,5 +70,8 @@
         {% endfor %}
         </tbody>
     </table>
+    <div class="d-flex justify-content-center">
+    {{ knp_pagination_render(studentsGrades) }}
+    </div>
 <div>
 {% endblock %}

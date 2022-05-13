@@ -11,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Knp\Component\Pager\PaginatorInterface;
 
 class ClasseController extends AbstractController
 {
@@ -18,7 +19,7 @@ class ClasseController extends AbstractController
      * @IsGranted("ROLE_USER")
      * @Route("/classes", name="app_classe")
      */
-    public function index(Request $request): Response
+    public function index(Request $request, PaginatorInterface $paginator): Response
     {
         $form = $this->createFormBuilder(null)
         ->add('type', ChoiceType::class, [
@@ -41,24 +42,39 @@ class ClasseController extends AbstractController
     
         $form->handleRequest($request);
 
-        $classes = $this->getDoctrine()->getRepository(Classe::class)->findAll();
+        $data = $request->query->get('query');
+        $type =$request->query->get('type');
+
+        if($data != null && $type != null){
+            $em = $this->getDoctrine()->getManager();
+
+            $query = $em->createQuery(
+                'SELECT c
+                FROM App:Classe c
+                WHERE c.'.$type.' = :data'
+            )
+            ->setParameter('data', $data);    
+
+            $classes = $query->getResult();
+
+        } else {
+            $classes = $this->getDoctrine()->getRepository(Classe::class)->findAll();
+        }
+
+        $classes = $paginator->paginate(
+            $classes, /* query NOT result */
+            $request->query->getInt('page', 1)/*page number*/,
+            2/*limit per page*/
+        );
 
         if($form->isSubmitted()){
 
-            $type = $form->getData()['type'];
             $data = $form->getData()['query'];
+            $type = $form->getData()['type'];
 
-            if($data != null){
-                $em = $this->getDoctrine()->getManager();
-                $query = $em->createQuery(
-                    'SELECT c
-                    FROM App:Classe c
-                    WHERE c.'.$type.' = :data'
-                )
-                ->setParameter('data', $data);    
-
-                $classes = $query->getResult();        
-            }
+            $route = $this->generateUrl('app_classe', ['query' => $data, 'type' => $type]);
+            
+            return $this->redirect($route);
         }
 
         
