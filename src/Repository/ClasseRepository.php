@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Classe;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -73,4 +74,19 @@ class ClasseRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function delete($id){
+        $data = $this->getEntityManager()->find(className: Classe::class, id: $id);
+        $this->getEntityManager()->remove($data);
+        $this->getEntityManager()->flush();
+    }
+
+    public function getFilterResult($type, $data){
+        return $this->getEntityManager()->createQuery(
+            'SELECT c
+                FROM App:Classe c
+                WHERE c.'.$type.' = :data'
+        )
+            ->setParameter('data', $data)
+            ->getResult();
+    }
 }

@@ -73,4 +73,22 @@ class StudentRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function getFilterResult($type,$data){
+        if($type == 'classe'){
+            $query = $this->getEntityManager()->createQuery(
+                'SELECT s
+                    FROM App:Student s, App:Classe c
+                    WHERE s.classe = c.id and c.name = :data'
+            )
+                ->setParameter('data', $data);
+        } else {
+            $query = $this->getEntityManager()->createQuery(
+                'SELECT s
+                    FROM App:Student s
+                    WHERE s.'.$type.' = :data'
+            )
+                ->setParameter('data', $data);
+        }
+        return $query->getResult();
+    }
 }

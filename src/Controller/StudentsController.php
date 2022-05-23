@@ -3,6 +3,7 @@
 namespace App\Controller;
 use App\Entity\Student;
 use App\Form\StudentType;
+use App\Repository\StudentRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +17,10 @@ use Knp\Component\Pager\PaginatorInterface;
 
 class StudentsController extends AbstractController
 {
-    
+    public function __construct(private StudentRepository $repository)
+    {
+    }
+
     /**
      * @IsGranted("ROLE_USER")
      * @Route("/students", name="app_students")
@@ -51,23 +55,7 @@ class StudentsController extends AbstractController
         $type =$request->query->get('type');
 
         if($data != null && $type != null){
-            $em = $this->getDoctrine()->getManager();
-            if($type == 'classe'){
-                $query = $em->createQuery(
-                    'SELECT s
-                    FROM App:Student s, App:Classe c
-                    WHERE s.classe = c.id and c.name = :data'
-                )
-                ->setParameter('data', $data);   
-            } else {
-                $query = $em->createQuery(
-                    'SELECT s
-                    FROM App:Student s
-                    WHERE s.'.$type.' = :data'
-                )
-                ->setParameter('data', $data);    
-            }
-            $students = $query->getResult();
+            $students = $this->repository->getFilterResult($type,$data);
 
         } else {
             $students = $this->getDoctrine()->getRepository(Student::class)->findAll();

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Course;
 use App\Entity\Classe;
 use App\Form\CourseType;
+use App\Repository\CourseRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +18,10 @@ use Knp\Component\Pager\PaginatorInterface;
 
 class CourseController extends AbstractController
 {
+    public function __construct(private CourseRepository $courseRepository)
+    {
+    }
+
     /**
      * @IsGranted("ROLE_USER")
      * @Route("/courses", name="app_course")
@@ -48,23 +53,7 @@ class CourseController extends AbstractController
         $type =$request->query->get('type');
 
         if($data != null && $type != null){
-            $em = $this->getDoctrine()->getManager();
-            if($type == "classe"){
-                $query = $em->createQuery(
-                    'SELECT s
-                    FROM App:Course s, App:Classe c
-                    WHERE s.classe = c.id and c.name = :data'
-                )
-                ->setParameter('data', $data);  
-            } else {
-                $query = $em->createQuery(
-                    'SELECT s
-                    FROM App:Course s
-                    WHERE s.'.$type.' = :data'
-                )
-                ->setParameter('data', $data);  
-            }
-            $courses = $query->getResult();
+            $courses = $this->courseRepository->getFilterResult($type,$data);
 
         } else {
             $courses = $this->getDoctrine()->getRepository(Course::class)->findAll();

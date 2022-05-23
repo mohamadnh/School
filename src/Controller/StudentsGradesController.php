@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Entity\Course;
 use App\Entity\StudentsGrades;
 use App\Form\StudentsGradesType;
+use App\Repository\StudentsGradesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,6 +17,10 @@ use Knp\Component\Pager\PaginatorInterface;
     
 class StudentsGradesController extends AbstractController
 {
+    public function __construct(private StudentsGradesRepository $repository)
+    {
+    }
+
     /**
      * @IsGranted("ROLE_USER")
      * @Route("/students/grades", name="app_students_grades")
@@ -50,38 +55,7 @@ class StudentsGradesController extends AbstractController
         $type =$request->query->get('type');
 
         if($data != null && $type != null){
-
-            $em = $this->getDoctrine()->getManager();
-            if($type == 'classe'){
-                $query = $em->createQuery(
-                    'SELECT sg
-                    FROM App:Student s, App:Classe c, App:StudentsGrades sg
-                    WHERE s.classe = c.id and c.name = :data and sg.student = s.id'
-                )
-                ->setParameter('data', $data);
-            }else if($type == 'course'){
-                $query = $em->createQuery(
-                    'SELECT sg
-                    FROM App:Course c, App:StudentsGrades sg
-                    WHERE sg.course = c.id and c.name = :data'
-                )
-                ->setParameter('data', $data);
-            } else if($type == 'grade'){
-                $query = $em->createQuery(
-                    'SELECT sg
-                    FROM App:StudentsGrades sg, App:Student s
-                    WHERE sg.grade = :data and s.id = sg.student'
-                )
-                ->setParameter('data', $data);   
-            } else {
-                $query = $em->createQuery(
-                    'SELECT sg
-                    FROM App:StudentsGrades sg, App:Student s
-                    WHERE s.'.$type.' = :data and s.id = sg.student'
-                )
-                ->setParameter('data', $data);    
-            }
-            $studentsGrades = $query->getResult();
+            $studentsGrades = $this->repository->getFilterResult($type,$data);
         } else {
             $studentsGrades = $this->getDoctrine()->getRepository(StudentsGrades::class)->findAll();
         }

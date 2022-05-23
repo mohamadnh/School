@@ -73,4 +73,37 @@ class StudentsGradesRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function getFilterResult($type,$data){
+
+        if($type == 'classe'){
+            $query = $this->getEntityManager()->createQuery(
+                'SELECT sg
+                    FROM App:Student s, App:Classe c, App:StudentsGrades sg
+                    WHERE s.classe = c.id and c.name = :data and sg.student = s.id'
+            )
+                ->setParameter('data', $data);
+        }else if($type == 'course'){
+            $query = $this->getEntityManager()->createQuery(
+                'SELECT sg
+                    FROM App:Course c, App:StudentsGrades sg
+                    WHERE sg.course = c.id and c.name = :data'
+            )
+                ->setParameter('data', $data);
+        } else if($type == 'grade'){
+            $query = $this->getEntityManager()->createQuery(
+                'SELECT sg
+                    FROM App:StudentsGrades sg, App:Student s
+                    WHERE sg.grade = :data and s.id = sg.student'
+            )
+                ->setParameter('data', $data);
+        } else {
+            $query = $this->getEntityManager()->createQuery(
+                'SELECT sg
+                    FROM App:StudentsGrades sg, App:Student s
+                    WHERE s.'.$type.' = :data and s.id = sg.student'
+            )
+                ->setParameter('data', $data);
+        }
+        return $query->getResult();
+    }
 }

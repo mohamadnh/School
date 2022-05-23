@@ -13,8 +13,7 @@ class ClasseType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('section')
-        ;
+            ->add('section');
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -23,4 +22,5 @@ class ClasseType extends AbstractType
             'data_class' => Classe::class,
         ]);
     }
+
 }

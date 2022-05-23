@@ -3,6 +3,7 @@
 namespace App\Controller;
 use App\Entity\Classe;
 use App\Form\ClasseType;
+use App\Repository\ClasseRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,6 +16,11 @@ use Knp\Component\Pager\PaginatorInterface;
 
 class ClasseController extends AbstractController
 {
+
+    public function __construct(private ClasseRepository $classeRepository)
+    {
+    }
+
     /**
      * @IsGranted("ROLE_USER")
      * @Route("/classes", name="app_classe")
@@ -46,16 +52,8 @@ class ClasseController extends AbstractController
         $type =$request->query->get('type');
 
         if($data != null && $type != null){
-            $em = $this->getDoctrine()->getManager();
 
-            $query = $em->createQuery(
-                'SELECT c
-                FROM App:Classe c
-                WHERE c.'.$type.' = :data'
-            )
-            ->setParameter('data', $data);    
-
-            $classes = $query->getResult();
+            $classes = $this->classeRepository->getFilterResult($type, $data);
 
         } else {
             $classes = $this->getDoctrine()->getRepository(Classe::class)->findAll();
@@ -151,11 +149,8 @@ class ClasseController extends AbstractController
      * @Route("/classes/delete/{id}", name="deleteClasse")
      */
     public function delete($id){
-        $data = $this->getDoctrine()->getRepository(Classe::class)->find($id);
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($data);
-        $em->flush();
 
+        $this->classeRepository->delete($id);
         $this->addFlash('notice','Deleted Successfully');
 
         return $this->redirectToRoute('app_classe');
